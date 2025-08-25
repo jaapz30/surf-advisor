@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>SWA Surfadvisor v2</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net"/>
+  <link rel="preconnect" href="https://api.open-meteo.com"/>
+  <link rel="stylesheet" href="css/styles.css"/>
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script defer src="js/settings.js"></script>
+  <script defer src="js/data.js"></script>
+  <script defer src="js/ensemble.js"></script>
+  <script defer src="js/charts.js"></script>
+  <script defer src="js/app.js"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="brand">
+      <img src="assets/logo.png" alt="SWA Surfadvisor" class="logo"/>
+      <div class="titles">
+        <h1>SWA Surfadvisor v2</h1>
+        <p class="subtitle">Multi-model surfadvies voor IJsselmeer &amp; Flevoland</p>
+      </div>
+    </div>
+    <button id="btnSettings" class="icon-btn" aria-label="Instellingen">
+      <img src="assets/gear.svg" alt="" />
+    </button>
+  </header>
+
+  <main class="container">
+    <div id="notice" class="notice" hidden>
+      <span id="noticeText"></span>
+      <button id="btnRetry" class="btn small">Opnieuw</button>
+    </div>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>Beste spot vandaag <img src="assets/trophy.svg" alt="" class="ico"/></h2>
+      </div>
+      <div id="bestSpots" class="spots-row">
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>Komende 7 dagen — Schokkerhaven</h2>
+        <div class="note">(beste uur tussen <span id="cfgStart">07:00</span>–<span id="cfgEnd">20:00</span>)</div>
+      </div>
+
+      <details class="roll8">
+        <summary>Toon grafiek — Komende 8 uur (rolling)</summary>
+        <div class="chart-wrap"><canvas id="schok-8h" height="160"></canvas></div>
+      </details>
+
+      <div id="days" class="days-row">
+        <div class="skeleton-day"></div>
+        <div class="skeleton-day"></div>
+        <div class="skeleton-day"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><h2>Live windkaart</h2></div>
+      <div class="windy-wrap">
+        <iframe title="Windy kaart - Schokkerhaven" width="100%" height="420" frameborder="0"
+          src="https://embed.windy.com/embed2.html?lat=52.56&lon=5.645&detailLat=52.56&detailLon=5.645&zoom=10&level=surface&overlay=wind&marker=true&message=true"></iframe>
+      </div>
+    </section>
+
+    <details class="card">
+      <summary class="card-head"><h2>Uitleg &amp; bronnen <img src="assets/info.svg" class="ico" alt=""/></h2></summary>
+      <div class="card-body">
+        <h3>Hoe maken we de ensemble-voorspelling?</h3>
+        <p>We halen per spot en per model data op via Open-Meteo (HARMONIE, ICON-D2/EU, ECMWF, GFS, knmi_seamless, ARPEGE), passen per model een <em>gust-fix</em> toe, corrigeren met een <em>zelflerende EWMA-bias</em>, en wegen modellen per horizon.</p>
+        <h3>Betrouwbaarheid</h3>
+        <p>Kleine model-spreiding (IQR) ⇒ hoge betrouwbaarheid.</p>
+        <h3>Vlagerigheid</h3>
+        <p><code>gustiness = clamp((vlaag − wind)/max(wind,1), 0, 1)</code>.</p>
+        <h3>Privacy</h3>
+        <p>Alles draait client-side. Bias staat lokaal (localStorage).</p>
+      </div>
+    </details>
+  </main>
+
+  <dialog id="dlgSettings" class="dialog">
+    <form method="dialog" class="dialog-body">
+      <h3>Instellingen</h3>
+      <label>Windsnelheidsdrempel (kn)
+        <input id="inpThreshold" type="number" min="1" step="1" value="15"/>
+      </label>
+      <label>Dagvenster start
+        <input id="inpStart" type="time" value="07:00"/>
+      </label>
+      <label>Dagvenster eind
+        <input id="inpEnd" type="time" value="20:00"/>
+      </label>
+      <menu>
+        <button class="btn ghost" value="cancel">Annuleren</button>
+        <button id="btnSave" class="btn" value="default">Opslaan</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <footer class="footer">
+    <span>© SWA Surfadvisor v2</span>
+    <span id="lastUpdated"></span>
+  </footer>
+</body>
+</html>

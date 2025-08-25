@@ -1,0 +1,42 @@
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+:root{--accent:#e10600;--card:#fff;--border:#eee;--text:#111;--muted:#666;--good:#0b8a38;--bad:#b00020}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;background:#fafafa;color:var(--text)}
+.header{display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:4px solid var(--accent);background:#000;color:#fff}
+.brand{display:flex;gap:12px;align-items:center}
+.logo{height:44px;width:auto}
+.titles h1{margin:0;font-size:20px}
+.subtitle{margin:2px 0 0 0;opacity:.8;font-size:12px}
+.icon-btn{background:var(--accent);border:none;border-radius:10px;padding:8px;cursor:pointer}
+.icon-btn img{width:20px;height:20px;filter:invert(1)}
+.container{max-width:960px;margin:0 auto;padding:12px}
+.card{border:1px solid var(--border);border-radius:14px;background:var(--card);box-shadow:0 1px 4px rgba(0,0,0,.04);margin:12px 0;overflow:hidden}
+.card-head{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid var(--border)}
+.card-body{padding:10px 12px}
+.ico{width:18px;height:18px;vertical-align:-3px}
+.note{font-size:12px;color:var(--muted)}
+.notice{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#fff8e6;color:#7a4a00;border:1px solid #ffd9a8;border-radius:10px;padding:8px 10px;margin:10px 0}
+.btn{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:8px 10px;font-weight:700;cursor:pointer}
+.btn.small{padding:6px 8px;font-size:12px}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid #ccc}
+.spots-row{display:flex;gap:10px;overflow-x:auto;padding:10px}
+.spot{min-width:300px;border:1px solid var(--border);border-left:6px solid var(--accent);border-radius:12px;padding:10px;background:#fff}
+.spot h3{margin:0 0 6px 0}
+.meta{display:flex;flex-wrap:wrap;gap:8px;font-size:12px;color:var(--muted)}
+.badge{display:inline-block;padding:4px 8px;border-radius:999px;border:1px solid #ddd;font-size:12px}
+.badge.go{background:#e7f9ed;color:var(--good);border-color:#b8ebc7}
+.badge.nogo{background:#ffe9ea;color:var(--bad);border-color:#ffd0d2}
+.roll8 summary{cursor:pointer;font-weight:700;padding:10px 12px}
+.chart-wrap{padding:10px 12px}
+.days-row{display:flex;gap:10px;overflow-x:auto;padding:10px}
+.day{min-width:260px;border:1px solid var(--border);border-radius:12px;padding:10px}
+.skeleton-card,.skeleton-day{background:linear-gradient(90deg,#eee,#f5f5f5,#eee);background-size:200% 100%;animation:sk 1.2s infinite;border-radius:12px}
+.skeleton-card{width:300px;height:120px}
+.skeleton-day{width:260px;height:140px}
+@keyframes sk{0%{background-position:0 0}100%{background-position:-200% 0}}
+.dialog{border:none;border-radius:14px;padding:0}
+.dialog-body{padding:14px;min-width:280px}
+.dialog-body label{display:flex;justify-content:space-between;align-items:center;margin:8px 0;gap:10px}
+.dialog-body input{padding:6px 8px;border:1px solid #ccc;border-radius:8px}
+.footer{display:flex;justify-content:space-between;gap:12px;padding:10px 12px;font-size:12px;opacity:.7}
+canvas{max-width:100%}
+@media(min-width:720px){.spot{min-width:320px}}

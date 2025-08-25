@@ -1,0 +1,11 @@
+(function(global){
+  const MODELS=["knmi_harmonie_arome_netherlands","icon_d2","icon_eu","ecmwf_ifs025","gfs_global","knmi_seamless","meteofrance_arpege_europe"];
+  const TZ="Europe/Berlin";
+  const SPOTS={ Schokkerhaven:{lat:52.56,lon:5.645}, Ketelhaven:{lat:52.595,lon:5.633}, Lelystad:{lat:52.52,lon:5.47}, Urk:{lat:52.663,lon:5.601}, Stavoren:{lat:52.884,lon:5.367}, Marknesse:{lat:52.7083,lon:5.8708} };
+  function url(lat,lon,model){ const u=new URL("https://api.open-meteo.com/v1/forecast"); u.searchParams.set("latitude",lat.toFixed(4)); u.searchParams.set("longitude",lon.toFixed(4)); u.searchParams.set("hourly","wind_speed_10m,wind_direction_10m,wind_gusts_10m"); u.searchParams.set("wind_speed_unit","kn"); u.searchParams.set("timezone",TZ); u.searchParams.set("past_days","3"); if(model) u.searchParams.set("models",model); return u.toString(); }
+  async function fetchOne(lat,lon,model){ const r=await fetch(url(lat,lon,model)); if(!r.ok) throw new Error("Open-Meteo "+r.status); return await r.json(); }
+  function norm(r){ const t=r?.hourly?.time||[]; const wsp=(r?.hourly?.wind_speed_10m||[]).map(Number); const wdir=(r?.hourly?.wind_direction_10m||[]).map(Number); const gust=(r?.hourly?.wind_gusts_10m||[]).map(Number); const L=Math.min(t.length,wsp.length,wdir.length,gust.length); return {time:t.slice(0,L),wsp:wsp.slice(0,L),wdir:wdir.slice(0,L),gust:gust.slice(0,L)}; }
+  async function fetchSpot(lat,lon){ const out={}; const errs=[]; await Promise.allSettled(MODELS.map(async m=>{ try{ out[m]=norm(await fetchOne(lat,lon,m)); }catch(e){ errs.push(m+':'+e.message); } })); if(Object.keys(out).length===0){ try{ out.best=norm(await fetchOne(lat,lon,"best_match")); }catch{} if(!out.best){ try{ out.best=norm(await fetchOne(lat,lon,null)); }catch(e){ errs.push('plain:'+e.message); } } } return {seriesByModel:out, errors:errs}; }
+  async function fetchAllSpots(){ const res={},errs=[]; await Promise.all(Object.entries(SPOTS).map(async ([name,pos])=>{ try{ res[name]=await fetchSpot(pos.lat,pos.lon); }catch(e){ errs.push(name+':'+e.message); } })); return {spots:res, errors:errs}; }
+  global.SWA=global.SWA||{}; global.SWA.data={MODELS,SPOTS,fetchAllSpots};
+})(window);
